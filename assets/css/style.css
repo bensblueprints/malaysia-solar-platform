@@ -495,7 +495,7 @@ p {
     pointer-events: none;
 }
 
-.hero-grid {
+.hero-bg-grid {
     position: absolute;
     inset: 0;
     background-image:
