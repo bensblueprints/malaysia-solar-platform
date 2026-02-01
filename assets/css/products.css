@@ -1,0 +1,584 @@
+/* ============================================
+   PRODUCTS PAGE STYLES
+   ============================================ */
+
+.products-page .site-header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+}
+
+.products-page .site-logo span {
+    color: var(--space-deep);
+}
+
+.products-page .nav-menu a {
+    color: var(--space-navy);
+}
+
+.products-page .nav-menu a.active {
+    color: var(--solar-amber);
+}
+
+.products-page .menu-toggle span {
+    background: var(--space-deep);
+}
+
+/* Products Hero */
+.products-hero {
+    background: var(--gradient-space);
+    padding: calc(80px + var(--space-3xl)) 0 var(--space-3xl);
+    text-align: center;
+}
+
+.products-hero .hero-badge {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-md);
+    background: rgba(46, 204, 113, 0.15);
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    border-radius: var(--radius-full);
+    color: var(--eco-green);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-lg);
+}
+
+.products-hero h1 {
+    color: var(--pure-white);
+    margin-bottom: var(--space-md);
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.products-hero p {
+    color: var(--medium-gray);
+    font-size: 1.25rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Bill Selector */
+.bill-selector {
+    background: var(--pure-white);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-2xl);
+    margin-bottom: var(--space-3xl);
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+}
+
+.bill-selector h3 {
+    margin-bottom: var(--space-lg);
+    color: var(--space-deep);
+}
+
+.bill-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    justify-content: center;
+    margin-bottom: var(--space-md);
+}
+
+.bill-btn {
+    padding: var(--space-md) var(--space-xl);
+    background: var(--soft-gray);
+    border: 2px solid transparent;
+    border-radius: var(--radius-lg);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--space-navy);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.bill-btn:hover {
+    border-color: var(--solar-gold);
+}
+
+.bill-btn.active {
+    background: var(--gradient-solar);
+    border-color: var(--solar-amber);
+    color: var(--space-deep);
+    font-weight: 600;
+}
+
+.selector-hint {
+    font-size: 0.875rem;
+    color: var(--medium-gray);
+}
+
+/* Products Section */
+.products-section {
+    background: var(--soft-gray);
+    padding: var(--space-3xl) 0 var(--space-5xl);
+}
+
+/* Products Grid */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-xl);
+}
+
+@media (max-width: 1200px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+}
+
+/* Product Card */
+.product-card {
+    background: var(--pure-white);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-xl);
+    position: relative;
+    transition: all var(--transition-base);
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
+
+.product-card.highlighted {
+    border-color: var(--solar-amber);
+    box-shadow: 0 0 0 4px rgba(247, 179, 43, 0.15);
+}
+
+.product-card.popular {
+    border-color: var(--solar-amber);
+}
+
+/* Product Badge */
+.product-badge {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--soft-gray);
+    border-radius: var(--radius-md);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--medium-gray);
+}
+
+.product-badge.popular {
+    background: var(--gradient-solar);
+    color: var(--space-deep);
+}
+
+.product-badge.premium {
+    background: var(--gradient-space);
+    color: var(--pure-white);
+}
+
+/* Product Header */
+.product-header {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
+
+.system-size {
+    font-family: var(--font-display);
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--space-deep);
+    line-height: 1;
+}
+
+.system-size span {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--medium-gray);
+}
+
+.system-label {
+    font-size: 0.875rem;
+    color: var(--medium-gray);
+    margin-top: var(--space-xs);
+}
+
+/* Product Visual - Panel Grid */
+.product-visual {
+    background: var(--soft-gray);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    text-align: center;
+}
+
+.panel-grid {
+    display: grid;
+    gap: 4px;
+    margin-bottom: var(--space-sm);
+}
+
+.panel-grid.panels-7 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.panel-grid.panels-12 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.panel-grid.panels-16 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.panel-grid.panels-24 {
+    grid-template-columns: repeat(6, 1fr);
+}
+
+.panel {
+    aspect-ratio: 2/3;
+    background: linear-gradient(135deg, #1a365d 0%, #2d4a7c 50%, #1a365d 100%);
+    border-radius: 2px;
+    position: relative;
+}
+
+.panel::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: linear-gradient(135deg,
+        transparent 0%,
+        rgba(255,255,255,0.1) 50%,
+        transparent 100%);
+    border-radius: 1px;
+}
+
+.panel::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 2px;
+    right: 2px;
+    height: 1px;
+    background: rgba(255,255,255,0.15);
+}
+
+.panel-count {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--space-navy);
+}
+
+/* Product Price */
+.product-price {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid rgba(10, 22, 40, 0.1);
+}
+
+.price-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--medium-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-xs);
+}
+
+.price-value {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--solar-amber);
+}
+
+.price-note {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--medium-gray);
+    margin-top: var(--space-xs);
+}
+
+/* Product Features */
+.product-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-lg);
+    flex-grow: 1;
+}
+
+.product-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    font-size: 0.875rem;
+    color: var(--space-navy);
+    margin-bottom: var(--space-sm);
+}
+
+.product-features li svg {
+    flex-shrink: 0;
+    color: var(--eco-green);
+    margin-top: 2px;
+}
+
+/* Product Savings */
+.product-savings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.savings-item {
+    background: var(--soft-gray);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    text-align: center;
+}
+
+.savings-value {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--eco-green);
+}
+
+.savings-label {
+    display: block;
+    font-size: 0.6875rem;
+    color: var(--medium-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Product Ideal */
+.product-ideal {
+    background: rgba(247, 179, 43, 0.1);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    font-size: 0.8125rem;
+    color: var(--space-navy);
+    margin-bottom: var(--space-lg);
+}
+
+.product-ideal strong {
+    color: var(--solar-amber);
+}
+
+/* Product Button */
+.product-card .btn-block {
+    margin-top: auto;
+}
+
+/* ============================================
+   INCLUDED SECTION
+   ============================================ */
+.included-section {
+    background: var(--pure-white);
+    padding: var(--space-5xl) 0;
+}
+
+.included-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-xl);
+}
+
+@media (max-width: 1024px) {
+    .included-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .included-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.included-item {
+    text-align: center;
+    padding: var(--space-xl);
+}
+
+.included-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--gradient-solar-soft);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-md);
+}
+
+.included-icon svg {
+    color: var(--solar-amber);
+}
+
+.included-item h4 {
+    margin-bottom: var(--space-sm);
+    color: var(--space-deep);
+}
+
+.included-item p {
+    font-size: 0.9375rem;
+    color: var(--medium-gray);
+}
+
+/* ============================================
+   COMPARISON SECTION
+   ============================================ */
+.comparison-section {
+    background: var(--soft-gray);
+    padding: var(--space-5xl) 0;
+}
+
+.comparison-table-wrapper {
+    overflow-x: auto;
+    margin: 0 calc(-1 * var(--space-md));
+    padding: 0 var(--space-md);
+}
+
+.comparison-table {
+    width: 100%;
+    min-width: 600px;
+    background: var(--pure-white);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border-collapse: collapse;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: var(--space-md) var(--space-lg);
+    text-align: center;
+    border-bottom: 1px solid rgba(10, 22, 40, 0.05);
+}
+
+.comparison-table th:first-child,
+.comparison-table td:first-child {
+    text-align: left;
+    font-weight: 600;
+}
+
+.comparison-table thead th {
+    background: var(--gradient-space);
+    color: var(--pure-white);
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 700;
+    padding: var(--space-lg);
+}
+
+.comparison-table thead th:first-child {
+    background: var(--space-deep);
+}
+
+.comparison-table thead th.highlight {
+    background: var(--gradient-solar);
+    color: var(--space-deep);
+}
+
+.comparison-table tbody tr:hover {
+    background: var(--soft-gray);
+}
+
+.comparison-table tbody td {
+    font-size: 0.9375rem;
+    color: var(--space-navy);
+}
+
+.comparison-table tbody td.highlight {
+    background: rgba(247, 179, 43, 0.05);
+    font-weight: 600;
+    color: var(--solar-amber);
+}
+
+.comparison-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ============================================
+   PRODUCTS CTA
+   ============================================ */
+.products-cta {
+    background: var(--gradient-space);
+    padding: var(--space-5xl) 0;
+}
+
+.cta-content {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.cta-content h2 {
+    color: var(--pure-white);
+    margin-bottom: var(--space-md);
+}
+
+.cta-content p {
+    color: var(--medium-gray);
+    font-size: 1.125rem;
+    margin-bottom: var(--space-xl);
+}
+
+.cta-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    justify-content: center;
+}
+
+.btn-outline-light {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: var(--pure-white);
+}
+
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--pure-white);
+}
+
+.btn-outline-light svg {
+    margin-right: var(--space-sm);
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+@media (max-width: 768px) {
+    .bill-options {
+        flex-direction: column;
+    }
+
+    .bill-btn {
+        width: 100%;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        padding: var(--space-sm) var(--space-md);
+        font-size: 0.875rem;
+    }
+
+    .comparison-table thead th {
+        font-size: 1rem;
+    }
+}

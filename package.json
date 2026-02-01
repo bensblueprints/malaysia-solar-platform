@@ -1,0 +1,20 @@
+{
+  "name": "malaysia-solar-platform",
+  "version": "1.0.0",
+  "description": "Malaysia Solar - Premium Solar Solutions for Malaysian Homes",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx netlify dev",
+    "build": "echo 'No build step required'",
+    "deploy": "npx netlify deploy --prod"
+  },
+  "keywords": [
+    "solar",
+    "malaysia",
+    "renewable-energy",
+    "nem-3.0"
+  ],
+  "author": "Malaysia Solar",
+  "license": "MIT",
+  "dependencies": {}
+}
