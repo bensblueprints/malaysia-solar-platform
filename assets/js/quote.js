@@ -332,15 +332,15 @@
         const { roofAnalysis, solarPotential, recommendation } = data;
         const dataSourceLabel = data.dataSource === 'google_solar_api'
             ? 'Based on satellite imagery analysis'
-            : 'Based on estimated values for your area';
+            : 'Based on Malaysian solar conditions';
 
         const roofAreaDisplay = roofAnalysis.usableRoofAreaSqm
             ? `${roofAnalysis.usableRoofAreaSqm} sqm`
-            : 'Not available';
+            : 'Estimated';
 
         const maxPanelsDisplay = roofAnalysis.maxPanelCount
             ? `${roofAnalysis.maxPanelCount} panels`
-            : 'Estimate based on property type';
+            : 'Based on property type';
 
         const sunshineBadge = solarPotential.maxSunshineHoursPerYear > 1600
             ? '<span class="badge badge-success">Excellent</span>'
