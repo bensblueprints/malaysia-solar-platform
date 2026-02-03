@@ -44,16 +44,24 @@
             const config = await response.json();
 
             if (!config.enabled || !config.apiKey) {
-                console.log('Places Autocomplete not enabled');
+                console.log('Places Autocomplete not enabled - using manual address entry');
                 return;
             }
 
-            // Load Google Maps JavaScript API
-            await loadGoogleMapsScript(config.apiKey);
+            // Load Google Maps JavaScript API with error suppression
+            try {
+                await loadGoogleMapsScript(config.apiKey);
+            } catch (loadError) {
+                console.log('Google Maps API not available - using manual address entry');
+                hideGoogleMapsErrors();
+                return;
+            }
 
             // Initialize autocomplete on address input
             const addressInput = document.getElementById('input-address');
-            if (!addressInput || !window.google || !window.google.maps) {
+            if (!addressInput || !window.google || !window.google.maps || !window.google.maps.places) {
+                console.log('Google Places not available - using manual address entry');
+                hideGoogleMapsErrors();
                 return;
             }
 
@@ -96,11 +104,35 @@
                 }
             });
 
-            console.log('Places Autocomplete initialized');
+            console.log('Places Autocomplete initialized successfully');
 
         } catch (error) {
-            console.error('Error initializing Places Autocomplete:', error);
+            console.log('Places Autocomplete not available:', error.message);
+            hideGoogleMapsErrors();
         }
+    }
+
+    // Hide Google Maps error elements
+    function hideGoogleMapsErrors() {
+        // Hide any Google Maps error alerts/dialogs
+        const style = document.createElement('style');
+        style.textContent = `
+            .gm-err-container, .gm-err-content, .gm-err-icon, .gm-err-title, .gm-err-message,
+            .dismissButton, .gm-style-pbc, [src*="AuthenticationService"],
+            div[style*="background-color: rgb(229, 227, 223)"] {
+                display: none !important;
+            }
+            .gm-err-autocomplete {
+                display: none !important;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Remove any error elements that Google may have injected
+        setTimeout(() => {
+            const errorElements = document.querySelectorAll('.gm-err-container, .gm-err-autocomplete, [class*="gm-err"]');
+            errorElements.forEach(el => el.remove());
+        }, 100);
     }
 
     // Load Google Maps JavaScript API dynamically

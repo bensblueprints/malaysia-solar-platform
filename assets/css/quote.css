@@ -1162,3 +1162,32 @@
 #input-address:focus {
     z-index: 1;
 }
+
+/* Hide Google Maps API error elements */
+.gm-err-container,
+.gm-err-content,
+.gm-err-icon,
+.gm-err-title,
+.gm-err-message,
+.gm-err-autocomplete,
+.gm-style-pbc,
+div.dismissButton,
+img[src*="maps.gstatic.com/mapfiles/api-3/images/icon_error"],
+img[src*="AuthenticationService"],
+.address-input-group > img,
+.form-group > img[src*="google"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Hide error icon that appears next to input */
+.address-input-group {
+    position: relative;
+}
+
+.address-input-group > img,
+.address-input-group > div:not(.form-input):not(.btn) {
+    display: none !important;
+}
