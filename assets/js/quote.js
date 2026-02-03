@@ -36,141 +36,146 @@
         checkUrlParams();
     });
 
-    // Initialize Google Places Autocomplete
-    async function initPlacesAutocomplete() {
-        try {
-            // Fetch API key from secure endpoint
-            const response = await fetch('/api/maps-config');
-            const config = await response.json();
+    // Initialize custom address autocomplete (server-side API)
+    function initPlacesAutocomplete() {
+        const addressInput = document.getElementById('input-address');
+        if (!addressInput) return;
 
-            if (!config.enabled || !config.apiKey) {
-                console.log('Places Autocomplete not enabled - using manual address entry');
+        let debounceTimer;
+        let currentSuggestions = [];
+        let selectedIndex = -1;
+
+        // Create dropdown container
+        const dropdown = document.createElement('div');
+        dropdown.className = 'address-dropdown hidden';
+        dropdown.id = 'address-dropdown';
+        addressInput.parentElement.appendChild(dropdown);
+
+        // Handle input changes
+        addressInput.addEventListener('input', function() {
+            const query = this.value.trim();
+
+            clearTimeout(debounceTimer);
+            selectedIndex = -1;
+
+            if (query.length < 3) {
+                hideDropdown();
                 return;
             }
 
-            // Load Google Maps JavaScript API with error suppression
-            try {
-                await loadGoogleMapsScript(config.apiKey);
-            } catch (loadError) {
-                console.log('Google Maps API not available - using manual address entry');
-                hideGoogleMapsErrors();
-                return;
-            }
-
-            // Initialize autocomplete on address input
-            const addressInput = document.getElementById('input-address');
-            if (!addressInput || !window.google || !window.google.maps || !window.google.maps.places) {
-                console.log('Google Places not available - using manual address entry');
-                hideGoogleMapsErrors();
-                return;
-            }
-
-            const autocomplete = new google.maps.places.Autocomplete(addressInput, {
-                types: ['address'],
-                componentRestrictions: { country: 'my' }, // Restrict to Malaysia
-                fields: ['formatted_address', 'geometry', 'address_components']
-            });
-
-            // Handle place selection
-            autocomplete.addListener('place_changed', function() {
-                const place = autocomplete.getPlace();
-
-                if (place.formatted_address) {
-                    addressInput.value = place.formatted_address;
-
-                    // Store coordinates for later use
-                    if (place.geometry && place.geometry.location) {
-                        state.selectedLocation = {
-                            lat: place.geometry.location.lat(),
-                            lng: place.geometry.location.lng(),
-                            formattedAddress: place.formatted_address
-                        };
-                    }
-
-                    // Auto-trigger roof analysis when address is selected
-                    setTimeout(() => {
-                        analyzeRoofWithSolarAPI(place.formatted_address);
-                    }, 300);
-                }
-            });
-
-            // Prevent form submission on enter in autocomplete
-            addressInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    const pacContainer = document.querySelector('.pac-container');
-                    if (pacContainer && pacContainer.style.display !== 'none') {
-                        e.preventDefault();
-                    }
-                }
-            });
-
-            console.log('Places Autocomplete initialized successfully');
-
-        } catch (error) {
-            console.log('Places Autocomplete not available:', error.message);
-            hideGoogleMapsErrors();
-        }
-    }
-
-    // Hide Google Maps error elements
-    function hideGoogleMapsErrors() {
-        // Hide any Google Maps error alerts/dialogs
-        const style = document.createElement('style');
-        style.textContent = `
-            .gm-err-container, .gm-err-content, .gm-err-icon, .gm-err-title, .gm-err-message,
-            .dismissButton, .gm-style-pbc, [src*="AuthenticationService"],
-            div[style*="background-color: rgb(229, 227, 223)"] {
-                display: none !important;
-            }
-            .gm-err-autocomplete {
-                display: none !important;
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Remove any error elements that Google may have injected
-        setTimeout(() => {
-            const errorElements = document.querySelectorAll('.gm-err-container, .gm-err-autocomplete, [class*="gm-err"]');
-            errorElements.forEach(el => el.remove());
-        }, 100);
-    }
-
-    // Load Google Maps JavaScript API dynamically
-    function loadGoogleMapsScript(apiKey) {
-        return new Promise((resolve, reject) => {
-            // Check if already loaded
-            if (window.google && window.google.maps && window.google.maps.places) {
-                resolve();
-                return;
-            }
-
-            // Check if script is already being loaded
-            const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
-            if (existingScript) {
-                existingScript.addEventListener('load', resolve);
-                existingScript.addEventListener('error', reject);
-                return;
-            }
-
-            // Create and load script
-            const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=__googleMapsCallback`;
-            script.async = true;
-            script.defer = true;
-
-            // Create callback
-            window.__googleMapsCallback = function() {
-                delete window.__googleMapsCallback;
-                resolve();
-            };
-
-            script.onerror = function() {
-                delete window.__googleMapsCallback;
-                reject(new Error('Failed to load Google Maps API'));
-            };
-
-            document.head.appendChild(script);
+            debounceTimer = setTimeout(() => {
+                fetchAddressSuggestions(query);
+            }, 300);
         });
+
+        // Handle keyboard navigation
+        addressInput.addEventListener('keydown', function(e) {
+            if (!currentSuggestions.length) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, currentSuggestions.length - 1);
+                updateDropdownSelection();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, 0);
+                updateDropdownSelection();
+            } else if (e.key === 'Enter' && selectedIndex >= 0) {
+                e.preventDefault();
+                selectAddress(currentSuggestions[selectedIndex]);
+            } else if (e.key === 'Escape') {
+                hideDropdown();
+            }
+        });
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!addressInput.contains(e.target) && !dropdown.contains(e.target)) {
+                hideDropdown();
+            }
+        });
+
+        // Fetch suggestions from server
+        async function fetchAddressSuggestions(query) {
+            try {
+                const response = await fetch(`/api/address-autocomplete?input=${encodeURIComponent(query)}`);
+                const data = await response.json();
+
+                currentSuggestions = data.predictions || [];
+
+                if (currentSuggestions.length > 0) {
+                    renderDropdown();
+                } else {
+                    hideDropdown();
+                }
+            } catch (error) {
+                console.error('Error fetching address suggestions:', error);
+                hideDropdown();
+            }
+        }
+
+        // Render dropdown
+        function renderDropdown() {
+            dropdown.innerHTML = currentSuggestions.map((suggestion, index) => `
+                <div class="address-item ${index === selectedIndex ? 'selected' : ''}" data-index="${index}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    <div class="address-text">
+                        <span class="address-main">${suggestion.mainText || suggestion.description.split(',')[0]}</span>
+                        <span class="address-secondary">${suggestion.secondaryText || suggestion.description.split(',').slice(1).join(',')}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add click handlers
+            dropdown.querySelectorAll('.address-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const index = parseInt(item.dataset.index);
+                    selectAddress(currentSuggestions[index]);
+                });
+            });
+
+            dropdown.classList.remove('hidden');
+        }
+
+        // Update dropdown selection
+        function updateDropdownSelection() {
+            dropdown.querySelectorAll('.address-item').forEach((item, index) => {
+                item.classList.toggle('selected', index === selectedIndex);
+            });
+        }
+
+        // Select an address
+        function selectAddress(suggestion) {
+            addressInput.value = suggestion.description;
+
+            // Store location if available
+            if (suggestion.location) {
+                state.selectedLocation = {
+                    lat: suggestion.location.lat,
+                    lng: suggestion.location.lng,
+                    formattedAddress: suggestion.description
+                };
+            }
+
+            hideDropdown();
+
+            // Trigger roof analysis
+            setTimeout(() => {
+                analyzeRoofWithSolarAPI(suggestion.description);
+            }, 300);
+        }
+
+        // Hide dropdown
+        function hideDropdown() {
+            dropdown.classList.add('hidden');
+            currentSuggestions = [];
+            selectedIndex = -1;
+        }
+
+        console.log('Custom address autocomplete initialized');
     }
 
     // Initialize wizard
