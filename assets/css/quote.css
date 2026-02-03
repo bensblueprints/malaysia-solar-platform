@@ -681,3 +681,392 @@
     flex-direction: column;
     gap: var(--space-lg);
 }
+
+/* ============================================
+   ROOF ANALYSIS - SOLAR API
+   ============================================ */
+
+/* Address Input Group */
+.address-input-group {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.address-input-group .form-input {
+    flex: 1;
+}
+
+.btn-analyze {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    white-space: nowrap;
+    padding: var(--space-md) var(--space-lg);
+    font-size: 0.875rem;
+}
+
+.btn-analyze svg {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-analyze .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+    .address-input-group {
+        flex-direction: column;
+    }
+
+    .btn-analyze {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Roof Analysis Results */
+.roof-analysis-results {
+    margin-top: var(--space-lg);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.roof-analysis-results.hidden {
+    display: none;
+}
+
+/* Loading State */
+.analysis-loading {
+    background: var(--soft-gray);
+    padding: var(--space-xl);
+    text-align: center;
+}
+
+.analysis-loading .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(247, 179, 43, 0.2);
+    border-top-color: var(--solar-amber);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto var(--space-md);
+}
+
+.analysis-loading p {
+    color: var(--medium-gray);
+    font-size: 0.9375rem;
+}
+
+/* Error State */
+.analysis-error {
+    background: rgba(231, 76, 60, 0.08);
+    border: 1px solid rgba(231, 76, 60, 0.2);
+    padding: var(--space-lg);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.analysis-error svg {
+    width: 32px;
+    height: 32px;
+    color: #E74C3C;
+}
+
+.analysis-error p {
+    color: var(--medium-gray);
+    font-size: 0.875rem;
+}
+
+/* Analysis Results */
+.analysis-results {
+    background: linear-gradient(135deg, #0A1628 0%, #1A2C4A 100%);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+}
+
+.results-header-mini {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.results-header-mini svg {
+    width: 24px;
+    height: 24px;
+    color: var(--eco-green);
+}
+
+.results-header-mini h4 {
+    color: var(--pure-white);
+    font-size: 1.125rem;
+    margin: 0;
+}
+
+.results-header-mini .data-source {
+    font-size: 0.75rem;
+    color: var(--medium-gray);
+    background: rgba(255, 255, 255, 0.1);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-full);
+    margin-left: auto;
+}
+
+/* Analysis Grid */
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+@media (max-width: 640px) {
+    .analysis-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.analysis-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    background: rgba(255, 255, 255, 0.05);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+}
+
+.analysis-item .item-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(247, 179, 43, 0.15);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.analysis-item .item-icon svg {
+    width: 20px;
+    height: 20px;
+    color: var(--solar-gold);
+}
+
+.analysis-item .item-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.analysis-item .item-value {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--pure-white);
+}
+
+.analysis-item .item-label {
+    font-size: 0.75rem;
+    color: var(--medium-gray);
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    margin-left: var(--space-xs);
+    vertical-align: middle;
+}
+
+.badge-success {
+    background: rgba(46, 204, 113, 0.2);
+    color: var(--eco-green);
+}
+
+.badge-warning {
+    background: rgba(247, 179, 43, 0.2);
+    color: var(--solar-amber);
+}
+
+/* Recommendation Preview */
+.recommendation-preview {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    text-align: center;
+}
+
+.rec-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-md);
+}
+
+.rec-badge.suitable {
+    background: rgba(46, 204, 113, 0.2);
+    color: var(--eco-green);
+}
+
+.rec-badge.limited {
+    background: rgba(247, 179, 43, 0.2);
+    color: var(--solar-amber);
+}
+
+.rec-badge svg {
+    width: 16px;
+    height: 16px;
+}
+
+.rec-system {
+    color: var(--pure-white);
+    font-size: 1rem;
+    margin-bottom: var(--space-xs);
+}
+
+.rec-system strong {
+    color: var(--solar-gold);
+}
+
+.rec-production {
+    color: var(--medium-gray);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* Analysis Notes */
+.analysis-notes {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.analysis-notes .note {
+    color: var(--medium-gray);
+    font-size: 0.8125rem;
+    margin: 0;
+    padding-left: var(--space-md);
+    position: relative;
+}
+
+.analysis-notes .note::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.4em;
+    width: 4px;
+    height: 4px;
+    background: var(--solar-amber);
+    border-radius: 50%;
+}
+
+/* Roof Badge in Results */
+.roof-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    font-size: 0.75rem;
+    color: var(--space-navy);
+    background: rgba(10, 22, 40, 0.1);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-full);
+    margin-top: var(--space-md);
+}
+
+.roof-badge.hidden {
+    display: none;
+}
+
+.roof-badge svg {
+    width: 14px;
+    height: 14px;
+    color: var(--eco-green);
+}
+
+/* Notification Toast */
+.notification-toast {
+    position: fixed;
+    bottom: var(--space-xl);
+    right: var(--space-xl);
+    background: var(--space-deep);
+    color: var(--pure-white);
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    box-shadow: var(--shadow-xl);
+    z-index: 1000;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification-toast.notification-success {
+    background: linear-gradient(135deg, var(--eco-green) 0%, var(--eco-teal) 100%);
+}
+
+.notification-toast.notification-warning {
+    background: linear-gradient(135deg, var(--solar-amber) 0%, var(--solar-orange) 100%);
+    color: var(--space-deep);
+}
+
+.notification-toast.notification-error {
+    background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+}
+
+.notification-toast button {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.25rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    line-height: 1;
+}
+
+.notification-toast button:hover {
+    opacity: 1;
+}
+
+@media (max-width: 640px) {
+    .notification-toast {
+        left: var(--space-md);
+        right: var(--space-md);
+        bottom: var(--space-md);
+    }
+}

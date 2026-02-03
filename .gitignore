@@ -38,3 +38,6 @@ build/
 *.tmp
 *.temp
 *.swp
+
+# Local Netlify folder
+.netlify

@@ -107,9 +107,21 @@
 
                         <div class="form-group">
                             <label class="form-label required">Property Address</label>
-                            <input type="text" class="form-input" name="address" id="input-address" required placeholder="Enter your full address">
-                            <span class="form-hint">This helps us assess your property for solar installation</span>
+                            <div class="address-input-group">
+                                <input type="text" class="form-input" name="address" id="input-address" required placeholder="Enter your full address in Malaysia">
+                                <button type="button" class="btn btn-secondary btn-analyze" id="analyze-roof-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <path d="M21 21l-4.35-4.35"/>
+                                    </svg>
+                                    Analyze My Roof
+                                </button>
+                            </div>
+                            <span class="form-hint">Enter your full address to analyze your roof's solar potential using satellite imagery</span>
                         </div>
+
+                        <!-- Roof Analysis Results -->
+                        <div id="roof-analysis-results" class="roof-analysis-results hidden"></div>
 
                         <div class="form-actions">
                             <button type="button" class="btn btn-primary" onclick="nextStep(2)">
@@ -246,6 +258,7 @@
                             <span class="rec-label">Recommended System</span>
                             <div class="rec-size" id="result-system-size">5kW</div>
                             <span class="rec-desc">Solar Panel System</span>
+                            <div id="roof-analysis-badge" class="roof-badge hidden"></div>
                         </div>
 
                         <div class="results-grid">
