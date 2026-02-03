@@ -1,13 +1,13 @@
-functionsDirectory = "/Users/blackhat01/malaysia-solar-platform/netlify/functions"
+functionsDirectory = "/Users/blackhat01/malaysia-solar-site/netlify/functions"
 functionsDirectoryOrigin = "config-v1"
 headersOrigin = "config"
 redirectsOrigin = "config"
 plugins = []
 
 [build]
-publish = "/Users/blackhat01/malaysia-solar-platform"
+publish = "/Users/blackhat01/malaysia-solar-site"
 publishOrigin = "config"
-functions = "/Users/blackhat01/malaysia-solar-platform/netlify/functions"
+functions = "/Users/blackhat01/malaysia-solar-site/netlify/functions"
 
 [build.environment]
 

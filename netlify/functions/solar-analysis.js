@@ -32,8 +32,42 @@ exports.handler = async (event, context) => {
         'Content-Type': 'application/json'
     };
 
-    // Google API Key from environment or use the provided one
-    const GOOGLE_API_KEY = process.env.GOOGLE_SOLAR_API_KEY || 'AIzaSyCZQN-zOVi7KUYk0-7YzmCVFEfM28LHnRI';
+    // Google API Key from environment variable only
+    const GOOGLE_API_KEY = process.env.GOOGLE_SOLAR_API_KEY;
+
+    // If no API key configured, return estimated data
+    if (!GOOGLE_API_KEY) {
+        console.log('Google Solar API key not configured');
+        return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({
+                success: true,
+                dataSource: 'estimated',
+                message: 'Using estimated values. Configure GOOGLE_SOLAR_API_KEY for precise roof analysis.',
+                location: {
+                    lat: 3.1390,
+                    lng: 101.6869,
+                    formattedAddress: JSON.parse(event.body).address
+                },
+                roofAnalysis: {
+                    roofAreaSqm: null,
+                    usableRoofAreaSqm: null,
+                    maxPanelCount: null,
+                    maxSolarArrayAreaM2: null,
+                    pitchDegrees: 15,
+                    azimuthDegrees: 180
+                },
+                solarPotential: {
+                    maxSunshineHoursPerYear: 1800,
+                    carbonOffsetFactorKgPerMwh: 400,
+                    annualSunshineHours: 1800,
+                    estimatedKwhPerKwpPerYear: 1400
+                },
+                recommendation: calculateRecommendation(null, null)
+            })
+        };
+    }
 
     try {
         const data = JSON.parse(event.body);
@@ -56,13 +90,37 @@ exports.handler = async (event, context) => {
         const geocodeData = await geocodeResponse.json();
 
         if (geocodeData.status !== 'OK' || !geocodeData.results || geocodeData.results.length === 0) {
-            console.log('Geocoding failed:', geocodeData.status);
+            console.log('Geocoding failed:', geocodeData.status, geocodeData.error_message);
+
+            // Return estimated data for Malaysia when geocoding fails
+            // Malaysia average solar conditions
             return {
-                statusCode: 400,
+                statusCode: 200,
                 headers,
                 body: JSON.stringify({
-                    error: 'Could not find the address. Please enter a valid Malaysian address.',
-                    status: geocodeData.status
+                    success: true,
+                    dataSource: 'estimated',
+                    message: 'Using estimated values for Malaysian conditions. Enable Google Maps Geocoding API for precise roof analysis.',
+                    location: {
+                        lat: 3.1390,  // KL approximate
+                        lng: 101.6869,
+                        formattedAddress: address
+                    },
+                    roofAnalysis: {
+                        roofAreaSqm: null,
+                        usableRoofAreaSqm: null,
+                        maxPanelCount: null,
+                        maxSolarArrayAreaM2: null,
+                        pitchDegrees: 15,
+                        azimuthDegrees: 180
+                    },
+                    solarPotential: {
+                        maxSunshineHoursPerYear: 1800,
+                        carbonOffsetFactorKgPerMwh: 400,
+                        annualSunshineHours: 1800,
+                        estimatedKwhPerKwpPerYear: 1400
+                    },
+                    recommendation: calculateRecommendation(null, null)
                 })
             };
         }
