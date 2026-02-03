@@ -1188,6 +1188,79 @@ img[src*="AuthenticationService"],
 }
 
 .address-input-group > img,
-.address-input-group > div:not(.form-input):not(.btn) {
+.address-input-group > div:not(.form-input):not(.btn):not(.address-dropdown) {
     display: none !important;
+}
+
+/* ============================================
+   CUSTOM ADDRESS AUTOCOMPLETE DROPDOWN
+   ============================================ */
+
+.address-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    background: var(--pure-white);
+    border: 1px solid rgba(10, 22, 40, 0.1);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: 10000;
+    margin-top: 4px;
+}
+
+.address-dropdown.hidden {
+    display: none;
+}
+
+.address-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    cursor: pointer;
+    transition: background 0.2s ease;
+    border-bottom: 1px solid rgba(10, 22, 40, 0.05);
+}
+
+.address-item:last-child {
+    border-bottom: none;
+}
+
+.address-item:hover,
+.address-item.selected {
+    background: var(--gradient-solar-soft);
+}
+
+.address-item svg {
+    width: 20px;
+    height: 20px;
+    color: var(--solar-amber);
+    flex-shrink: 0;
+}
+
+.address-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.address-main {
+    font-weight: 600;
+    color: var(--space-deep);
+    font-size: 0.9375rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.address-secondary {
+    color: var(--medium-gray);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
