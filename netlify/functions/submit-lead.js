@@ -33,10 +33,19 @@ exports.handler = async (event, context) => {
         'Content-Type': 'application/json'
     };
 
-    // GHL API Configuration
-    const GHL_API_KEY = process.env.GHL_API_KEY || 'pit-c5f1dcfb-969d-49eb-924c-144e4695bc0a';
-    const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID || 'fl5rL3eZQWBq2GYlDPkl';
+    // GHL API Configuration - keys must be set in Netlify environment variables
+    const GHL_API_KEY = process.env.GHL_API_KEY;
+    const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID;
     const GHL_API_URL = 'https://services.leadconnectorhq.com';
+
+    if (!GHL_API_KEY || !GHL_LOCATION_ID) {
+        console.log('GHL API credentials not configured');
+        return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({ success: true, message: 'Lead received (CRM not configured)' })
+        };
+    }
 
     try {
         const data = JSON.parse(event.body);
