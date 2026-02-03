@@ -13,6 +13,7 @@
         calculatedResults: {},
         selectedOption: null,
         solarAnalysis: null, // Store Solar API results
+        selectedLocation: null, // Store selected location from autocomplete
         isAnalyzing: false
     };
 
@@ -31,8 +32,114 @@
         initWizard();
         initRoofSizeSelector();
         initAddressAnalysis();
+        initPlacesAutocomplete();
         checkUrlParams();
     });
+
+    // Initialize Google Places Autocomplete
+    async function initPlacesAutocomplete() {
+        try {
+            // Fetch API key from secure endpoint
+            const response = await fetch('/api/maps-config');
+            const config = await response.json();
+
+            if (!config.enabled || !config.apiKey) {
+                console.log('Places Autocomplete not enabled');
+                return;
+            }
+
+            // Load Google Maps JavaScript API
+            await loadGoogleMapsScript(config.apiKey);
+
+            // Initialize autocomplete on address input
+            const addressInput = document.getElementById('input-address');
+            if (!addressInput || !window.google || !window.google.maps) {
+                return;
+            }
+
+            const autocomplete = new google.maps.places.Autocomplete(addressInput, {
+                types: ['address'],
+                componentRestrictions: { country: 'my' }, // Restrict to Malaysia
+                fields: ['formatted_address', 'geometry', 'address_components']
+            });
+
+            // Handle place selection
+            autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
+
+                if (place.formatted_address) {
+                    addressInput.value = place.formatted_address;
+
+                    // Store coordinates for later use
+                    if (place.geometry && place.geometry.location) {
+                        state.selectedLocation = {
+                            lat: place.geometry.location.lat(),
+                            lng: place.geometry.location.lng(),
+                            formattedAddress: place.formatted_address
+                        };
+                    }
+
+                    // Auto-trigger roof analysis when address is selected
+                    setTimeout(() => {
+                        analyzeRoofWithSolarAPI(place.formatted_address);
+                    }, 300);
+                }
+            });
+
+            // Prevent form submission on enter in autocomplete
+            addressInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const pacContainer = document.querySelector('.pac-container');
+                    if (pacContainer && pacContainer.style.display !== 'none') {
+                        e.preventDefault();
+                    }
+                }
+            });
+
+            console.log('Places Autocomplete initialized');
+
+        } catch (error) {
+            console.error('Error initializing Places Autocomplete:', error);
+        }
+    }
+
+    // Load Google Maps JavaScript API dynamically
+    function loadGoogleMapsScript(apiKey) {
+        return new Promise((resolve, reject) => {
+            // Check if already loaded
+            if (window.google && window.google.maps && window.google.maps.places) {
+                resolve();
+                return;
+            }
+
+            // Check if script is already being loaded
+            const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
+            if (existingScript) {
+                existingScript.addEventListener('load', resolve);
+                existingScript.addEventListener('error', reject);
+                return;
+            }
+
+            // Create and load script
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=__googleMapsCallback`;
+            script.async = true;
+            script.defer = true;
+
+            // Create callback
+            window.__googleMapsCallback = function() {
+                delete window.__googleMapsCallback;
+                resolve();
+            };
+
+            script.onerror = function() {
+                delete window.__googleMapsCallback;
+                reject(new Error('Failed to load Google Maps API'));
+            };
+
+            document.head.appendChild(script);
+        });
+    }
 
     // Initialize wizard
     function initWizard() {
@@ -120,12 +227,19 @@
         }
 
         try {
+            // Build request payload - include coordinates if available from autocomplete
+            const payload = { address };
+            if (state.selectedLocation && state.selectedLocation.lat && state.selectedLocation.lng) {
+                payload.lat = state.selectedLocation.lat;
+                payload.lng = state.selectedLocation.lng;
+            }
+
             const response = await fetch('/api/solar-analysis', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ address })
+                body: JSON.stringify(payload)
             });
 
             const data = await response.json();

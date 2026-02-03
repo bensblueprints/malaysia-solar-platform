@@ -71,7 +71,7 @@ exports.handler = async (event, context) => {
 
     try {
         const data = JSON.parse(event.body);
-        const { address } = data;
+        const { address, lat, lng } = data;
 
         if (!address) {
             return {
@@ -83,51 +83,60 @@ exports.handler = async (event, context) => {
 
         console.log('Analyzing solar potential for:', address);
 
-        // Step 1: Geocode the address to get lat/lng
-        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&components=country:MY&key=${GOOGLE_API_KEY}`;
+        let location;
+        let formattedAddress = address;
 
-        const geocodeResponse = await fetch(geocodeUrl);
-        const geocodeData = await geocodeResponse.json();
+        // If coordinates are provided (from Places Autocomplete), use them directly
+        if (lat && lng) {
+            console.log('Using provided coordinates:', lat, lng);
+            location = { lat, lng };
+        } else {
+            // Step 1: Geocode the address to get lat/lng
+            const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&components=country:MY&key=${GOOGLE_API_KEY}`;
 
-        if (geocodeData.status !== 'OK' || !geocodeData.results || geocodeData.results.length === 0) {
-            console.log('Geocoding failed:', geocodeData.status, geocodeData.error_message);
+            const geocodeResponse = await fetch(geocodeUrl);
+            const geocodeData = await geocodeResponse.json();
 
-            // Return estimated data for Malaysia when geocoding fails
-            // Malaysia average solar conditions
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({
-                    success: true,
-                    dataSource: 'estimated',
-                    message: 'Using estimated values for Malaysian conditions. Enable Google Maps Geocoding API for precise roof analysis.',
-                    location: {
-                        lat: 3.1390,  // KL approximate
-                        lng: 101.6869,
-                        formattedAddress: address
-                    },
-                    roofAnalysis: {
-                        roofAreaSqm: null,
-                        usableRoofAreaSqm: null,
-                        maxPanelCount: null,
-                        maxSolarArrayAreaM2: null,
-                        pitchDegrees: 15,
-                        azimuthDegrees: 180
-                    },
-                    solarPotential: {
-                        maxSunshineHoursPerYear: 1800,
-                        carbonOffsetFactorKgPerMwh: 400,
-                        annualSunshineHours: 1800,
-                        estimatedKwhPerKwpPerYear: 1400
-                    },
-                    recommendation: calculateRecommendation(null, null)
-                })
-            };
+            if (geocodeData.status !== 'OK' || !geocodeData.results || geocodeData.results.length === 0) {
+                console.log('Geocoding failed:', geocodeData.status, geocodeData.error_message);
+
+                // Return estimated data for Malaysia when geocoding fails
+                return {
+                    statusCode: 200,
+                    headers,
+                    body: JSON.stringify({
+                        success: true,
+                        dataSource: 'estimated',
+                        message: 'Using estimated values for Malaysian conditions. Enable Google Maps Geocoding API for precise roof analysis.',
+                        location: {
+                            lat: 3.1390,
+                            lng: 101.6869,
+                            formattedAddress: address
+                        },
+                        roofAnalysis: {
+                            roofAreaSqm: null,
+                            usableRoofAreaSqm: null,
+                            maxPanelCount: null,
+                            maxSolarArrayAreaM2: null,
+                            pitchDegrees: 15,
+                            azimuthDegrees: 180
+                        },
+                        solarPotential: {
+                            maxSunshineHoursPerYear: 1800,
+                            carbonOffsetFactorKgPerMwh: 400,
+                            annualSunshineHours: 1800,
+                            estimatedKwhPerKwpPerYear: 1400
+                        },
+                        recommendation: calculateRecommendation(null, null)
+                    })
+                };
+            }
+
+            location = geocodeData.results[0].geometry.location;
+            formattedAddress = geocodeData.results[0].formatted_address;
         }
 
-        const location = geocodeData.results[0].geometry.location;
-        const formattedAddress = geocodeData.results[0].formatted_address;
-        console.log('Geocoded location:', location, formattedAddress);
+        console.log('Using location:', location, formattedAddress);
 
         // Step 2: Call Google Solar API - Building Insights
         const solarUrl = `https://solar.googleapis.com/v1/buildingInsights:findClosest?location.latitude=${location.lat}&location.longitude=${location.lng}&requiredQuality=HIGH&key=${GOOGLE_API_KEY}`;
